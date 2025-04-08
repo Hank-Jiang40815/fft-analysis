@@ -7,15 +7,24 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 複製必要檔案
-COPY requirements.txt .
-COPY fft_example.py .
+# 複製套件檔案
+COPY . .
 
-# 安裝 Python 套件
+# 安裝套件相依
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 安裝套件本身
+RUN pip install -e .
+
 # 設定環境變數
+ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
-# 執行程式
-CMD ["python", "fft_example.py"]
+# 安裝開發相關依賴
+RUN pip install --no-cache-dir pytest
+
+# 執行單元測試
+RUN pytest tests/
+
+# 預設命令
+CMD ["python", "-m", "examples.fft_example"]

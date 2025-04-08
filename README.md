@@ -1,8 +1,8 @@
-# FFT 分析專案
+# FFT 分析套件
 
-這是一個用於頻譜分析的 Python 專案，包含 FFT（快速傅立葉轉換）、iFFT（逆快速傅立葉轉換）和梅爾頻譜分析功能。
+這是一個用於頻譜分析的 Python 套件，包含 FFT（快速傅立葉轉換）、iFFT（逆快速傅立葉轉換）和梅爾頻譜分析功能。
 
-## 功能特點
+## 套件功能
 
 ### FFT 分析
 - 生成測試信號並進行 FFT 分析
@@ -13,17 +13,14 @@
 - 支援音訊信號的梅爾頻譜轉換
 - 可自訂梅爾濾波器數量和頻率範圍
 - 自動生成頻譜圖和數據檔案
-- 提供頻率到梅爾刻度的轉換功能
 
 ## 安裝方式
 
-### 使用 Python 虛擬環境
+### 使用 pip 安裝
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # Linux/macOS
-venv\Scripts\activate     # Windows
-pip install -r requirements.txt
+# 從專案根目錄安裝
+pip install -e .
 ```
 
 ### 使用 Docker
@@ -36,13 +33,53 @@ docker run -it fft-analysis
 ## 使用方式
 
 ### FFT 分析
-```bash
-python fft_example.py
+```python
+from fft_analysis import FFTAnalyzer
+
+# 創建分析器實例
+analyzer = FFTAnalyzer(experiment_id=1)
+
+# 生成信號並分析
+t, signal, target_freqs = analyzer.generate_signal()
+freq, magnitude = analyzer.perform_fft(signal, sampling_rate=1000)
 ```
 
 ### 梅爾頻譜分析
+```python
+from fft_analysis import MelSpectrogramAnalyzer
+
+# 創建分析器實例
+analyzer = MelSpectrogramAnalyzer(
+    n_mels=128,
+    fmin=0.0,
+    fmax=8000.0,
+    experiment_id=1
+)
+
+# 計算梅爾頻譜
+mel_spectrogram = analyzer.compute_melspectrogram(signal, sr=22050)
+```
+
+## 開發指南
+
+1. 安裝開發環境
 ```bash
-python mel_spectrogram.py
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+venv\Scripts\activate     # Windows
+pip install -r requirements.txt
+pip install -e .
+```
+
+2. 執行測試
+```bash
+python -m pytest tests/
+```
+
+3. 執行示例
+```bash
+python examples/fft_example.py
+python examples/mel_spectrogram_example.py
 ```
 
 ## 輸出檔案
@@ -52,12 +89,3 @@ python mel_spectrogram.py
 - `Mel_Spectrogram_Exp{ID}_{DATE}.png`: 梅爾頻譜圖
 - `Mel_Data_Exp{ID}_{DATE}.json`: 梅爾頻譜數據
 - `REPORT.md`: 實驗報告彙整
-
-## 技術文件
-
-新增的主要功能類別：
-- `MelSpectrogramAnalyzer`: 提供梅爾頻譜分析相關功能
-  - `compute_melspectrogram()`: 計算梅爾頻譜
-  - `plot_melspectrogram()`: 繪製梅爾頻譜圖
-  - `save_data()`: 保存分析數據
-  - `update_report()`: 更新實驗報告
